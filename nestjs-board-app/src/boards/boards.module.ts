@@ -3,8 +3,13 @@
 import { Module } from '@nestjs/common';
 import { BoardsController } from './boards.controller';
 import { BoardsService } from './boards.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BoardRepository } from './board.repository';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([BoardRepository]) // board module 에서 import 없이 사용하기 위해 BoardRepository 추가
+  ],
   controllers: [BoardsController],
   providers: [BoardsService]
 })

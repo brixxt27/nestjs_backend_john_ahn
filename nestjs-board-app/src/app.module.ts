@@ -7,7 +7,7 @@ import { typeORMConfig } from './configs/typeorm.config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeORMConfig),
+    TypeOrmModule.forRoot(typeORMConfig), // 특정 entity 를 사용하기 전에 TypeORM 이 특정 entity 에 대해 알도록 하기 위해 모듈의 forRoot()의 인자로 entities의 배열(여기에선 objects)을 삽입한다.
     BoardsModule
   ],
   controllers: [AppController],
