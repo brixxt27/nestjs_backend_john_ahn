@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
 import {v1 as uuid} from 'uuid';// uuid 의 버전 v1을 사용한다는 의미, as 를 사용하면 이름을 변경 가능하다.
 import { CreateBoardDto } from './dto/create-board';
-import { IsEmpty } from 'class-validator';
-import { BoardRepository } from './board.repository';
+// import { IsEmpty } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BoardsService {
@@ -14,8 +14,8 @@ export class BoardsService {
   - controller 에서 비교적 복잡한 로직은 service 라는 class 로 관리 된다. service 는 module 에서 provider 라는 이름으로 controller 에 의존성을 주입 시킨다.
   - Database 에 대한 로직은 service 에서 다루지 않고 복잡한 일은 service 에 분배하듯이, 또 다시 책임을 분배한다. 이는 Repository 라고 불리는 class 로 관리 된다.
   */
-    @InjectRepository(BoardRepository)
-    private boardRepository: BoardRepository
+    @InjectRepository(Board)
+    private boardRepository: Repository<Board>
   ) {}
   // getAllBoards(): Board[] {
   //   return this.boards;
@@ -38,8 +38,8 @@ export class BoardsService {
   //   return board;
   // }
 
-  async getBoardById(id: number): Promise <Board> {
-    const found = await this.boardRepository.findOne(id);
+  async getBoardById(id: number): Promise <Board> { // number 가 아닌 값이 들어오면 ExceptionHandler 에서 에러 발생 500
+    const found = await this.boardRepository.findOneBy({ id });
 
     if (found === undefined) {
       throw new NotFoundException(`Can't find Board with id ${id}`);
