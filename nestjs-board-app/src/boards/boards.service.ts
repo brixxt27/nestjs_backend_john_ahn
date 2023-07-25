@@ -18,8 +18,8 @@ export class BoardsService {
     private boardRepository: Repository<Board>
   ) {}
 
-  getAllBoard(): Promise<Board[]> {
-    return this.boardRepository.find();
+  async getAllBoard(): Promise<Board[]> {
+    return await this.boardRepository.find();
   }
 
   // getAllBoards(): Board[] {
