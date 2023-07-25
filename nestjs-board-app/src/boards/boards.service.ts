@@ -9,18 +9,34 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class BoardsService {
-  constructor( /* - service 를 controller 에 주입하는 행위는 Service class 위에 @Injectable() 데코레이터를 추가한다. 이에 반해 BoardRepository 타입에 해당하는 변수를 선언하며 의존성을 주입하고 싶다면 생성자의 인자에 @InjectRepository(<repository type>) 을 통해 해야 한다.
+  /* - service 를 controller 에 주입하는 행위는 Service class 위에 @Injectable() 데코레이터를 추가한다. 이에 반해 BoardRepository 타입에 해당하는 변수를 선언하며 의존성을 주입하고 싶다면 생성자의 인자에 @InjectRepository(<repository type>) 을 통해 해야 한다.
   - client 로부터 온 request 는 파싱 되어 controller 에서 해당하는 경로로 routing 되게 된다. endpoint 에서 가장 앞쪽에 해당하는 리소스가 module 의 이름이 되며, 해당 이름을 가진 controller 와 service 로 만들면 가독성이 좋다. 
   - controller 에서 비교적 복잡한 로직은 service 라는 class 로 관리 된다. service 는 module 에서 provider 라는 이름으로 controller 에 의존성을 주입 시킨다.
   - Database 에 대한 로직은 service 에서 다루지 않고 복잡한 일은 service 에 분배하듯이, 또 다시 책임을 분배한다. 이는 Repository 라고 불리는 class 로 관리 된다.
   */
-    @InjectRepository(Board)
+  constructor(@InjectRepository(Board)
     private boardRepository: Repository<Board>
   ) {}
+
+  getAllBoard(): Promise<Board[]> {
+    return this.boardRepository.find();
+  }
+
   // getAllBoards(): Board[] {
   //   return this.boards;
   // }
 
+  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+    const {title, description} = createBoardDto;
+    const board = this.boardRepository.create({
+      title,
+      description,
+      status: BoardStatus.PUBLIC
+    });
+
+    await this.boardRepository.save(board);
+    return board;
+  }
   // createBoard(createBoardDto: CreateBoardDto): Board {
   //   // const title = createBoardDto.title;
   //   // const description = createBoardDto.description;

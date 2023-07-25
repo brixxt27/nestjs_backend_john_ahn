@@ -9,6 +9,10 @@ import { Board } from './board.entity';
 export class BoardsController {
   constructor(private boardsService: BoardsService) {}
 
+  @Get()
+  getAllBoard(): Promise<Board[]> {
+    return this.boardsService.getAllBoard();
+  }
   // @Get('/') // 빈칸과 '/' 는 같은 의미이다.
   // getAllBoard(): Board[] {
   //   return this.boardsService.getAllBoards();
@@ -19,6 +23,12 @@ export class BoardsController {
   // //   @Body('title') title: string,
   // //   @Body('description') description: string) {
   // // DTO 를 만들어서 위를 아래로 간략하게 표현 할 수 있다.
+  
+  @Post()
+  @UsePipes(ValidationPipe)
+  createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> { // entity Board 를 반환하기
+    return this.boardsService.createBoard(createBoardDto);
+  }
   // @Post()
   // @UsePipes(ValidationPipe)
   // createBoard(@Body() createBoardDto: CreateBoardDto) {
